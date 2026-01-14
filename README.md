@@ -4,5 +4,5 @@ Emote repo for GLYPHE browser extension.
 
 ## Structure
 
-`emotes.json` - Maps characters to image URLs
-`images/` - All emote images
+- `emotes.json` - Maps characters to image URLs
+- `CONTENT/` - All emote images
