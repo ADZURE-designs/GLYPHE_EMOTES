@@ -1,6 +1,6 @@
 name: Add Community Emote
 description: Submit a custom emote to the GLYPHE community pack
-title: "[EMOTE] :your_emote_name:"
+title: "[EMOTE] catdance"
 labels: ["pending"]
 body:
   - type: markdown
@@ -13,8 +13,8 @@ body:
     id: emote_name
     attributes:
       label: Emote Name
-      description: The code used to trigger this emote. Include the colons.
-      placeholder: ":catdance:"
+      description: The name of the emote, no colons needed.
+      placeholder: "catdance"
     validations:
       required: true
 
