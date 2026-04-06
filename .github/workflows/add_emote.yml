@@ -6,7 +6,7 @@ on:
 
 jobs:
   add-emote:
-    if: ${{ github.event.label.name == 'approved' }}
+    if: ${{ github.event.label.name == 'approved' && github.event.sender.login == 'ADZURE-designs' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
