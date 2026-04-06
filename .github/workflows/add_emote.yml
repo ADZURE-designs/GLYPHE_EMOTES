@@ -49,13 +49,12 @@ jobs:
               return;
             }
 
-            // Normalise emote name — ensure :colon: wrapping, lowercase, no spaces
-            emoteName = emoteName.toLowerCase().replace(/\s+/g, '_');
-            if (!emoteName.startsWith(':')) emoteName = ':' + emoteName;
-            if (!emoteName.endsWith(':')) emoteName = emoteName + ':';
+            // Normalise emote name — single leading colon only, lowercase, no spaces
+            emoteName = emoteName.toLowerCase().replace(/\s+/g, '_').replace(/:/g, '');
+            emoteName = ':' + emoteName;
 
-            // Validate name format: :letters_numbers_underscores:
-            if (!/^:[a-z0-9_]+:$/.test(emoteName)) {
+            // Validate name format: :letters_numbers_underscores
+            if (!/^:[a-z0-9_]+$/.test(emoteName)) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
