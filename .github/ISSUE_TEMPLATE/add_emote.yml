@@ -1,0 +1,38 @@
+name: Add Community Emote
+description: Submit a custom emote to the GLYPHE community pack
+title: "[EMOTE] :your_emote_name:"
+labels: ["pending"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submit your emote below. A maintainer will review and approve it.
+        Approved emotes become visible to all GLYPHE users within minutes.
+
+  - type: input
+    id: emote_name
+    attributes:
+      label: Emote Name
+      description: The code used to trigger this emote. Include the colons.
+      placeholder: ":catdance:"
+    validations:
+      required: true
+
+  - type: input
+    id: image_url
+    attributes:
+      label: Image URL
+      description: Direct link to the image. Allowed hosts — i.imgur.com, i.ibb.co, raw.githubusercontent.com
+      placeholder: "https://i.imgur.com/abc123.webp"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: agreement
+    attributes:
+      label: Submission Agreement
+      options:
+        - label: I own the rights to this image or it is freely usable
+          required: true
+        - label: This image does not contain NSFW, illegal, or harmful content
+          required: true
