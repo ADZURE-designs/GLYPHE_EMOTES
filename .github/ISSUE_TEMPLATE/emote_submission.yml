@@ -1,0 +1,37 @@
+name: Submit Community Emote
+description: Submit an emote to the GLYPHE community pack
+title: "[EMOTE] :emotename:"
+labels: ["emote-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing to GLYPHE! Your GitHub username will be automatically credited on your emote.
+
+  - type: input
+    id: emote_name
+    attributes:
+      label: Emote Name
+      description: The name used to trigger the emote (no colon, no spaces). Example: `catJAM`
+      placeholder: catJAM
+    validations:
+      required: true
+
+  - type: input
+    id: emote_url
+    attributes:
+      label: Image URL
+      description: Direct link to the image. Imgur, catbox.moe, or similar hosts work best. Must end in an image extension (.png, .gif, .webp, .avif).
+      placeholder: https://i.imgur.com/example.png
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I have the right to share this image and it doesn't violate any copyright
+          required: true
+        - label: The image is not offensive, hateful, or explicit
+          required: true

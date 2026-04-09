@@ -1,0 +1,130 @@
+name: Add Community Emote
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  add-emote:
+    # Only run for issues with the emote-submission label
+    if: contains(github.event.issue.labels.*.name, 'emote-submission')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse issue form
+        id: parse
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.issue.body;
+            const author = context.payload.issue.user.login;
+
+            // Parse the markdown form fields
+            const nameMatch = body.match(/### Emote Name\s*\n+([^\n#]+)/);
+            const urlMatch  = body.match(/### Image URL\s*\n+([^\n#]+)/);
+
+            if (!nameMatch || !urlMatch) {
+              core.setFailed('Could not parse issue body');
+              return;
+            }
+
+            const emoteName = nameMatch[1].trim().replace(/^:+|:+$/g, '');
+            const emoteUrl  = urlMatch[1].trim();
+
+            // Basic validation
+            if (!/^[a-zA-Z0-9_-]+$/.test(emoteName)) {
+              core.setFailed(`Invalid emote name: "${emoteName}" — only letters, numbers, _ and - allowed`);
+              return;
+            }
+            if (!/^https?:\/\/.+\.(png|gif|webp|avif|jpg|jpeg)(\?.*)?$/i.test(emoteUrl)) {
+              core.setFailed(`Invalid image URL: "${emoteUrl}" — must be a direct image link`);
+              return;
+            }
+
+            core.setOutput('emote_name', emoteName);
+            core.setOutput('emote_url', emoteUrl);
+            core.setOutput('author', author);
+
+      - name: Add emote to community_emotes.json
+        id: update
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const emoteName = '${{ steps.parse.outputs.emote_name }}';
+            const emoteUrl  = '${{ steps.parse.outputs.emote_url }}';
+            const author    = '${{ steps.parse.outputs.author }}';
+            const key       = `:${emoteName}`;
+
+            const raw  = fs.readFileSync('community_emotes.json', 'utf8');
+            const data = JSON.parse(raw);
+
+            if (data[key]) {
+              core.setOutput('status', 'duplicate');
+              core.setOutput('key', key);
+              return;
+            }
+
+            data[key] = { url: emoteUrl, author };
+
+            // Write back with consistent 2-space indent
+            fs.writeFileSync('community_emotes.json', JSON.stringify(data, null, 2) + '\n');
+            core.setOutput('status', 'added');
+            core.setOutput('key', key);
+
+      - name: Commit and push
+        if: steps.update.outputs.status == 'added'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add community_emotes.json
+          git commit -m "feat: add community emote ${{ steps.update.outputs.key }} by @${{ steps.parse.outputs.author }}"
+          git push
+
+      - name: Comment on issue — success
+        if: steps.update.outputs.status == 'added'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `✅ **Emote added!**\n\n\`${{ steps.update.outputs.key }}\` has been added to the community pack and credited to **@${{ steps.parse.outputs.author }}**.\n\nIt will appear in GLYPHE within 24 hours (cache refresh).`
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.payload.issue.number,
+              state: 'closed'
+            });
+
+      - name: Comment on issue — duplicate
+        if: steps.update.outputs.status == 'duplicate'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `❌ **Duplicate emote name**\n\n\`${{ steps.update.outputs.key }}\` already exists in the community pack. Please choose a different name.`
+            });
+
+      - name: Comment on issue — parse error
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `❌ **Submission failed**\n\nThe bot couldn't process this submission. Common reasons:\n- Emote name has spaces or special characters\n- Image URL doesn't end in a direct image extension (.png, .gif, .webp, .avif)\n\nPlease close this issue and submit a new one with the corrected info.`
+            });
