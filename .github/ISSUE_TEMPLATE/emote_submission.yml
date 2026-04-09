@@ -12,7 +12,7 @@ body:
     id: emote_name
     attributes:
       label: Emote Name
-      description: The name used to trigger the emote (no colon, no spaces). Example: `catJAM`
+      description: "The name used to trigger the emote (no colon, no spaces). Example: catJAM"
       placeholder: catJAM
     validations:
       required: true
@@ -21,7 +21,7 @@ body:
     id: emote_url
     attributes:
       label: Image URL
-      description: Direct link to the image. Imgur, catbox.moe, or similar hosts work best. Must end in an image extension (.png, .gif, .webp, .avif).
+      description: "Direct link to the image. Imgur, catbox.moe, or similar hosts work best. Must end in an image extension (.png, .gif, .webp, .avif)."
       placeholder: https://i.imgur.com/example.png
     validations:
       required: true
