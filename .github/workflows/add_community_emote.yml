@@ -73,8 +73,9 @@ jobs:
 
             data[key] = { url: emoteUrl, author };
 
-            // Write back with consistent 2-space indent
-            fs.writeFileSync('community_emotes.json', JSON.stringify(data, null, 2) + '\n');
+            // Serialize with each entry on one line to match existing format
+            const lines = Object.entries(data).map(([k, v]) => `  ${JSON.stringify(k)}: ${JSON.stringify(v)}`);
+            fs.writeFileSync('community_emotes.json', '{\n' + lines.join(',\n') + '\n}\n');
             core.setOutput('status', 'added');
             core.setOutput('key', key);
 
