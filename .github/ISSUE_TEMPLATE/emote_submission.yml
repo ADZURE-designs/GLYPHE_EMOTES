@@ -1,6 +1,6 @@
 name: Submit Community Emote
 description: Submit an emote to the GLYPHE community pack
-title: "[EMOTE] :emotename:"
+title: "[EMOTE] :emotename"
 labels: ["emote-submission"]
 body:
   - type: markdown
