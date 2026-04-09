@@ -1,5 +1,18 @@
 {
-  ":adzure": { "url": "https://i.imgur.com/4lPtIGS.png", "author": "ADZURE-designs" },
-  ":adzure2": { "url": "https://i.imgur.com/P1OoUW6.png", "author": "ADZURE-designs" },
-  ":kojima": { "url": "https://i.imgur.com/E7KDpCl.jpeg", "author": "ADZURE-designs" }
+  ":adzure": {
+    "url": "https://i.imgur.com/4lPtIGS.png",
+    "author": "ADZURE-designs"
+  },
+  ":adzure2": {
+    "url": "https://i.imgur.com/P1OoUW6.png",
+    "author": "ADZURE-designs"
+  },
+  ":kojima": {
+    "url": "https://i.imgur.com/E7KDpCl.jpeg",
+    "author": "ADZURE-designs"
+  },
+  ":CatNotMe": {
+    "url": "https://i.imgur.com/YtuhFK7.png",
+    "author": "ADZURE-designs"
+  }
 }
